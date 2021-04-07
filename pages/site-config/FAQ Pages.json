@@ -1,0 +1,11 @@
+{
+    "$id": "unwanted-angelfish-undercoat-5cfd1",
+    "$schema": "https://schema.yext.com/config/pages/site-config/v1",
+    "siteName": "FAQ Template",
+    "features": [
+      {
+        "featureType": "SELF_SERVE_PAGE_SET",
+        "feature": "imprint-briskly-yahoo-c6c92"
+      }
+    ]
+  }
