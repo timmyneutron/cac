@@ -1,3 +1,0 @@
-{
-  "url": "https://${{km/connector.zendesk.subdomain}}.zendesk.com/api/v2/help_center/en-us/articles.json"
-}  
