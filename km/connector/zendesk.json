@@ -1,0 +1,74 @@
+{
+  "$id": "zendesk_apiConnector",
+  "$schema": "https://schema.yext.com/config/km/connector/v1",
+  "displayName": "Zendesk Connector",
+  "entityType": "yext/helpArticle",
+  "source": {
+    "sourceConfig": {
+      "apiPullConfig": {
+        "requestType": "GET",
+        "url": "https://${{km/connector.zendesk.subdomain}}.zendesk.com/api/v2/help_center/en-us/articles.json",
+        "paginationControl": {
+          "cursor": {
+            "cursor": "next_page",
+            "isUrl": true
+          }
+        },
+        "headers": {},
+        "queryParams": {
+          "per_page": "100"
+        },
+        "dataFormat": "JSON"
+      }
+    },
+    "baseSelector": {
+      "type": "JSON",
+      "header": "articles",
+      "path": "articles"
+    },
+    "selectors": [
+      {
+        "type": "JSON",
+        "header": "ID",
+        "path": "id"
+      },
+      {
+        "type": "JSON",
+        "header": "URL",
+        "path": "html_url"
+      },
+      {
+        "type": "JSON",
+        "header": "Name",
+        "path": "name"
+      },
+      {
+        "type": "JSON",
+        "header": "Body",
+        "path": "body"
+      }
+    ]
+  },
+  "mappings": [
+    {
+      "field": "yext/entityId",
+      "header": "ID",
+      "subfieldPath": []
+    },
+    {
+      "field": "yext/landingPageUrl",
+      "header": "URL",
+      "subfieldPath": []
+    },
+    {
+      "field": "yext/name",
+      "header": "Name",
+      "subfieldPath": []
+    },
+    {
+      "field": "yext/body",
+      "header": "Body",
+      "subfieldPath": []
+    }
+  ]
+}
