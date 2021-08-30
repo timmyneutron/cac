@@ -2,7 +2,7 @@
   "$id": "zendeskconnector",
   "$schema": "https://schema.yext.com/config/km/connector/v1",
   "displayName": "Zendesk Help Article Connector",
-  "entityType": "yext/helpArticle",
+  "entityType": "yext/helpArticlea",
   "mappings": [
     {
       "field": "yext/entityId",
