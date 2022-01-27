@@ -1,0 +1,1501 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "https://schema.yext.com/config/km/connector",
+  "$version": "2",
+  "type": "object",
+  "additionalProperties": false,
+  "title": "Connector",
+  "description": "A resource that represents the configuration of a Connector.",
+  "properties": {
+    "$id": {
+      "type": "string"
+    },
+    "$schema": {
+      "const": "https://schema.yext.com/config/km/connector/v2"
+    },
+    "displayName": {
+      "type": "string",
+      "title": "Display Name",
+      "description": "Display name of this Connector."
+    },
+    "entityType": {
+      "type": "string",
+      "title": "Entity Type",
+      "format": "km/entity-type",
+      "description": "The entity type which data can be ingested for."
+    },
+    "source": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "Source",
+      "description": "Represents a combination of the configuration to fetch data \u0026 selectors to extract content from the raw data.",
+      "properties": {
+        "sourceConfig": {
+          "type": "object",
+          "additionalProperties": false,
+          "title": "Source Configuration",
+          "description": "Configuration for various sources of data.",
+          "properties": {
+            "crawlerConfig": {
+              "$ref": "#/definitions/configs/crawlerConfig"
+            },
+            "apiPullConfig": {
+              "$ref": "#/definitions/configs/apiPullConfig"
+            },
+            "apiPushConfig": {
+              "$ref": "#/definitions/configs/apiPushConfig"
+            },
+            "functionConfig": {
+              "$ref": "#/definitions/configs/functionConfig"
+            },
+            "nativeSourceConfig": {
+              "$ref": "#/definitions/configs/nativeSourceConfig"
+            }
+          },
+          "oneOf": [
+            {
+              "required": [
+                "crawlerConfig"
+              ]
+            },
+            {
+              "required": [
+                "apiPullConfig"
+              ]
+            },
+            {
+              "required": [
+                "apiPushConfig"
+              ]
+            },
+            {
+              "required": [
+                "functionConfig"
+              ]
+            },
+            {
+              "required": [
+                "nativeSourceConfig"
+              ]
+            }
+          ]
+        },
+        "baseSelector": {
+          "$ref": "#/definitions/selector"
+        },
+        "selectors": {
+          "type": "array",
+          "additionalItems": false,
+          "title": "Selectors",
+          "description": "An ordered list of selectors to apply and extract data.",
+          "items": {
+            "$ref": "#/definitions/selector"
+          }
+        }
+      },
+      "required": [
+        "sourceConfig"
+      ]
+    },
+    "transforms": {
+      "type": "array",
+      "additionalItems": false,
+      "title": "Transforms",
+      "description": "Transforms to sequentially apply to data produced by selectors.",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Transform",
+        "description": "A transform to apply to the data output by the previous step.",
+        "unordered": false,
+        "properties": {
+          "fixCapitalization": {
+            "$ref": "#/definitions/transform/fixCapitalization"
+          },
+          "removeUnwantedChars": {
+            "$ref": "#/definitions/transform/removeUnwantedChars"
+          },
+          "extractText": {
+            "$ref": "#/definitions/transform/extractText"
+          },
+          "function": {
+            "$ref": "#/definitions/transform/function"
+          },
+          "findAndReplace": {
+            "$ref": "#/definitions/transform/findAndReplace"
+          },
+          "addColumn": {
+            "$ref": "#/definitions/transform/addColumn"
+          },
+          "filterRows": {
+            "$ref": "#/definitions/transform/filterRows"
+          },
+          "formatDates": {
+            "$ref": "#/definitions/transform/formatDates"
+          },
+          "mergeColumns": {
+            "$ref": "#/definitions/transform/mergeColumns"
+          },
+          "splitColumn": {
+            "$ref": "#/definitions/transform/splitColumn"
+          },
+          "fillInEmptyCells": {
+            "$ref": "#/definitions/transform/fillInEmptyCells"
+          },
+          "splitIntoRows": {
+            "$ref": "#/definitions/transform/splitIntoRows"
+          }
+        },
+        "oneOf": [
+          {
+            "required": [
+              "fixCapitalization"
+            ]
+          },
+          {
+            "required": [
+              "removeUnwantedChars"
+            ]
+          },
+          {
+            "required": [
+              "extractText"
+            ]
+          },
+          {
+            "required": [
+              "function"
+            ]
+          },
+          {
+            "required": [
+              "findAndReplace"
+            ]
+          },
+          {
+            "required": [
+              "addColumn"
+            ]
+          },
+          {
+            "required": [
+              "filterRows"
+            ]
+          },
+          {
+            "required": [
+              "formatDates"
+            ]
+          },
+          {
+            "required": [
+              "mergeColumns"
+            ]
+          },
+          {
+            "required": [
+              "splitColumns"
+            ]
+          },
+          {
+            "required": [
+              "fillInEmptyCells"
+            ]
+          },
+          {
+            "required": [
+              "splitIntoRows"
+            ]
+          }
+        ]
+      }
+    },
+    "mappings": {
+      "type": "array",
+      "additionalItems": false,
+      "title": "Mapping",
+      "description": "The mapping generated by the transformers.",
+      "items": {
+        "$ref": "#/definitions/mapping"
+      }
+    },
+    "scheduleConfig": {
+      "type": "object",
+      "additionalProperties": false,
+      "title": "Schedule Config",
+      "description": "The configuration of the run schedule.",
+      "properties": {
+        "useSourceSchedule": {
+          "type": "boolean",
+          "title": "Use Source Schedule",
+          "description": "Indicates that the Connector should run automatically using the data source\u0027s schedule."
+        },
+        "customSchedule": {
+          "$ref": "#/definitions/customSchedule"
+        },
+        "runMode": {
+          "type": "string",
+          "title": "Run Mode",
+          "description": "Indicates the run mode.",
+          "enum": [
+            "DEFAULT",
+            "COMPREHENSIVE"
+          ]
+        }
+      },
+      "oneOf": [
+        {
+          "required": [
+            "useSourceSchedule"
+          ]
+        },
+        {
+          "required": [
+            "customSchedule"
+          ]
+        }
+      ]
+    }
+  },
+  "required": [
+    "$id",
+    "$schema",
+    "displayName",
+    "entityType",
+    "source"
+  ],
+  "definitions": {
+    "configs": {
+      "crawlerConfig": {
+        "type": "object",
+        "title": "Crawler Configuration",
+        "additionalProperties": false,
+        "description": "Configuration used to extract data from the crawler.",
+        "properties": {
+          "crawler": {
+            "type": "string",
+            "description": "The reference to the crawler resource.",
+            "format": "crawler/site-crawler"
+          },
+          "urlPatterns": {
+            "type": "array",
+            "additionalItems": false,
+            "title": "URL Patterns",
+            "description": "List of URL patterns to extract data for.",
+            "items": {
+              "type": "string",
+              "description": "The URL to extract data for."
+            }
+          }
+        },
+        "required": [
+          "crawler"
+        ]
+      },
+      "apiPullConfig": {
+        "type": "object",
+        "title": "API Pull Configuration",
+        "additionalProperties": false,
+        "description": "Configuration used to connect and pull data from an API.",
+        "properties": {
+          "requestType": {
+            "type": "string",
+            "title": "Request Type",
+            "description": "The request method type.",
+            "enum": [
+              "GET"
+            ]
+          },
+          "url": {
+            "type": "string",
+            "title": "Request URL",
+            "description": "The request URL to use."
+          },
+          "authentication": {
+            "type": "object",
+            "additionalProperties": false,
+            "title": "Authentication",
+            "description": "The authentication mechanism to use to connect to the API.",
+            "properties": {
+              "bearerToken": {
+                "type": "string",
+                "title": "Bearer Token",
+                "description": "A token that will be passed in the authorization header."
+              },
+              "basicAuthentication": {
+                "$ref": "#/definitions/authentications/basicAuthentication"
+              },
+              "apiKey": {
+                "$ref": "#/definitions/authentications/apiKey"
+              }
+            },
+            "oneOf": [
+              {
+                "required": [
+                  "bearerToken"
+                ]
+              },
+              {
+                "required": [
+                  "basicAuthentication"
+                ]
+              },
+              {
+                "required": [
+                  "apiKey"
+                ]
+              }
+            ]
+          },
+          "paginationControl": {
+            "type": "object",
+            "additionalProperties": false,
+            "title": "Pagination Control",
+            "description": "The method used for controlling pagination.",
+            "properties": {
+              "maxPageCount": {
+                "type": "number",
+                "title": "Max Page Count",
+                "description": "Max pages to fetch. If unset, all pages will be fetched."
+              },
+              "pageBasedPagination": {
+                "$ref": "#/definitions/pagination/pageBasedPagination"
+              },
+              "cursorPagination": {
+                "$ref": "#/definitions/pagination/cursorPagination"
+              },
+              "linkHeaderPagination": {
+                "$ref": "#/definitions/pagination/linkHeaderPagination"
+              },
+              "offsetPagination": {
+                "$ref": "#/definitions/pagination/offsetPagination"
+              }
+            },
+            "oneOf": [
+              {
+                "required": [
+                  "pageBasedPagination"
+                ]
+              },
+              {
+                "required": [
+                  "cursorPagination"
+                ]
+              },
+              {
+                "required": [
+                  "linkHeaderPagination"
+                ]
+              },
+              {
+                "required": [
+                  "offsetPagination"
+                ]
+              }
+            ]
+          },
+          "rateLimit": {
+            "type": "object",
+            "additionalItems": false,
+            "title": "API Rate Limit",
+            "description": "The maximum requests that can be made in a specified unit of time.",
+            "properties": {
+              "unit": {
+                "type": "string",
+                "title": "Time Unit",
+                "description": "The unit of time per which the specified quantity of requests can be sent.",
+                "enum": [
+                  "SECOND",
+                  "MINUTE",
+                  "HOUR"
+                ]
+              },
+              "quantity": {
+                "type": "number",
+                "title": "Request Quantity",
+                "description": "The maximum number of requests that may be sent in the specified unit of time."
+              }
+            },
+            "required": [
+              "unit",
+              "quantity"
+            ]
+          },
+          "headers": {
+            "type": "object",
+            "additionalItems": false,
+            "title": "Headers",
+            "description": "Map of header keys and values to use in the API request.",
+            "patternProperties": {
+              "^.*$": {
+                "type": "string"
+              }
+            }
+          },
+          "queryParams": {
+            "type": "object",
+            "additionalItems": false,
+            "title": "Query Parameters",
+            "description": "Map of query parameter keys and values to use in the API request.",
+            "patternProperties": {
+              "^.*$": {
+                "type": "string"
+              }
+            }
+          },
+          "dataFormat": {
+            "$ref": "#/definitions/dataFormat"
+          }
+        },
+        "required": [
+          "requestType",
+          "url",
+          "dataFormat"
+        ]
+      },
+      "apiPushConfig": {
+        "type": "object",
+        "title": "API Push Configuration",
+        "additionalProperties": false,
+        "description": "Configuration used to connect to an app and receive data pushed to the Connectors API endpoint.",
+        "properties": {
+          "app": {
+            "type": "string",
+            "title": "App",
+            "description": "The reference to the app resource."
+          },
+          "dataFormat": {
+            "$ref": "#/definitions/dataFormat"
+          },
+          "enabled": {
+            "type": "boolean",
+            "title": "Enabled",
+            "description": "If enabled, a new run will be initiated every time a request is sent to this Connector and the data provided in the request will be processed."
+          }
+        },
+        "required": [
+          "dataFormat"
+        ]
+      },
+      "functionConfig": {
+        "type": "object",
+        "title": "Function Configuration",
+        "additionalProperties": false,
+        "description": "Configuration used to invoke a function.",
+        "properties": {
+          "plugin": {
+            "type": "string",
+            "title": "Plugin",
+            "description": "The reference to a Plugin resource that contains a desired function.",
+            "format": "platform/plugin"
+          },
+          "function": {
+            "type": "string",
+            "title": "Function",
+            "description": "The function to invoke."
+          },
+          "dataFormat": {
+            "$ref": "#/definitions/dataFormat"
+          }
+        },
+        "required": [
+          "plugin",
+          "function",
+          "dataFormat"
+        ]
+      },
+      "nativeSourceConfig": {
+        "type": "object",
+        "title": "Native Source Configuration",
+        "additionalProperties": false,
+        "description": "Configuration used to extract data from a native data source.",
+        "properties": {
+          "source": {
+            "type": "string",
+            "title": "Source",
+            "description": "The reference to the native source."
+          },
+          "operation": {
+            "type": "string",
+            "title": "Operation",
+            "description": "The method that determines what data to fetch from the native source."
+          },
+          "inputs": {
+            "type": "object",
+            "title": "Inputs",
+            "description": "User-provided inputs required to extract data from the native source.",
+            "additionalProperties": true
+          }
+        },
+        "required": [
+          "source",
+          "operation",
+          "inputs"
+        ]
+      }
+    },
+    "authentications": {
+      "basicAuthentication": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Basic Authentication",
+        "description": "Username and password authentication.",
+        "properties": {
+          "username": {
+            "type": "string",
+            "title": "Username",
+            "description": "The username."
+          },
+          "password": {
+            "type": "string",
+            "title": "Password",
+            "description": "The password."
+          }
+        },
+        "required": [
+          "username"
+        ]
+      },
+      "apiKey": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "API Key",
+        "description": "An API key will be used to authenticate requests. The API-key can be appended in the header or as a query param depending on the source API.",
+        "properties": {
+          "key": {
+            "type": "string",
+            "title": "Key",
+            "description": "The key used to send the token."
+          },
+          "value": {
+            "type": "string",
+            "title": "value",
+            "description": "The API token content."
+          },
+          "setAsHeader": {
+            "type": "boolean",
+            "title": "Set As Header",
+            "description": "Indicates if the token should be set as a header instead of a query param."
+          }
+        },
+        "required": [
+          "key",
+          "value",
+          "setAsHeader"
+        ]
+      }
+    },
+    "pagination": {
+      "pageBasedPagination": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Page-Based Pagination",
+        "description": "Page-based pagination will increment the page key query parameter value until all pages are returned.",
+        "properties": {
+          "pageKey": {
+            "type": "string",
+            "title": "Page Key",
+            "description": "Pagination key to be passed as a query parameter in the request."
+          },
+          "pageStartValue": {
+            "type": "number",
+            "title": "Page Key Start Value",
+            "description": "Initial value for the page key. If specified, this value will be used as the query parameter value for the Page Key in the first request. If not specified, 0 will be used by default."
+          },
+          "totalPages": {
+            "type": "object",
+            "title": "Total Pages",
+            "description": "Points to the total number of pages either in the response body or the response headers.",
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key",
+                "description": "The key for the total number of pages. A JMES path expression."
+              },
+              "inHeader": {
+                "type": "boolean",
+                "title": "Value is in Response Header",
+                "default": false,
+                "description": "Indicates if the total number pages value is located in the response headers or the response body."
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "limitKey": {
+            "type": "string",
+            "title": "Limit Key",
+            "description": "Key to specify the max number of entries returned per page, passed as a query parameter in the request."
+          },
+          "limitValue": {
+            "type": "number",
+            "title": "Limit Value",
+            "description": "Value for the limit key which specifies the max number of entries returned per page."
+          }
+        },
+        "required": [
+          "pageKey"
+        ]
+      },
+      "cursorPagination": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Cursor Pagination",
+        "description": "Cursor-based pagination will look for a cursor in each response and pass it to the subsequent request to fetch the next page.",
+        "properties": {
+          "pageKey": {
+            "type": "string",
+            "title": "Page Key",
+            "description": "Pagination key to be passed as a query parameter in the request."
+          },
+          "cursor": {
+            "type": "string",
+            "title": "Cursor",
+            "description": "The key that contains the cursor in the response. If detectCursorInHeader is set to true, the key will be searched for in the header. If not set or set to false, the key will be searched for in the response body."
+          },
+          "cursorType": {
+            "type": "string",
+            "title": "Cursor Type",
+            "description": "Indicates if the cursor is a Token, Relative URL or Full URL.",
+            "enum": [
+              "TOKEN",
+              "FULL_URL",
+              "RELATIVE_URL"
+            ]
+          },
+          "detectCursorInHeader": {
+            "type": "boolean",
+            "title": "Detect Cursor in Header",
+            "description": "Indicates if the cursor key will be contained in the response header or the response body."
+          }
+        },
+        "required": [
+          "cursor",
+          "cursorType"
+        ]
+      },
+      "linkHeaderPagination": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Link Header Pagination",
+        "description": "Link header pagination will use a link with a specified relation provided in the response header to fetch the next page.",
+        "properties": {
+          "relationLabel": {
+            "type": "string",
+            "title": "Relation Label",
+            "description": "The label of the link that should be used. In most cases, this will be \"next\"."
+          },
+          "linkType": {
+            "type": "string",
+            "title": "Link Type",
+            "description": "Indicates if the link is a full URL or a relative URL.",
+            "enum": [
+              "FULL_URL",
+              "RELATIVE_URL"
+            ],
+            "default": "FULL_URL"
+          }
+        },
+        "required": [
+          "relationLabel"
+        ]
+      },
+      "offsetPagination": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Offset Pagination",
+        "description": "Offset pagination will use the offset and limit query parameters to paginate through all the items in a collection.",
+        "properties": {
+          "offsetKey": {
+            "type": "string",
+            "title": "Offset Key",
+            "description": "Offset key to be passed as a query parameter in the request."
+          },
+          "limitKey": {
+            "type": "string",
+            "title": "Limit Key",
+            "description": "Key to specify the max number of entries returned per page, passed as a query parameter in the request."
+          },
+          "offsetStartValue": {
+            "type": "number",
+            "title": "Offset Start Value",
+            "description": "Value for the offset to be used in the initial request.",
+            "default": 0
+          },
+          "limitValue": {
+            "type": "number",
+            "title": "Limit Value",
+            "description": "Value for the limit which specifies the max number of entries returned per page."
+          },
+          "totalPages": {
+            "type": "object",
+            "title": "Total Pages",
+            "description": "Points to the total number of pages either in the response body or the response headers.",
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key",
+                "description": "The key for the total number of pages. A JMES path expression."
+              },
+              "inHeader": {
+                "type": "boolean",
+                "title": "Value is in Response Header",
+                "default": false,
+                "description": "Indicates if the total number of pages value is located in the response headers or the response body."
+              }
+            },
+            "required": [
+              "key"
+            ]
+          },
+          "totalItems": {
+            "type": "object",
+            "title": "Total Items",
+            "description": "Points to the total number of items either in the response body or the response headers.",
+            "additionalProperties": false,
+            "properties": {
+              "key": {
+                "type": "string",
+                "title": "Key",
+                "description": "The key for the total number of items. A JMES path expression."
+              },
+              "inHeader": {
+                "type": "boolean",
+                "title": "Value is in Response Header",
+                "default": false,
+                "description": "Indicates if the total number of items value is located in the response headers or the response body."
+              }
+            },
+            "required": [
+              "key"
+            ]
+          }
+        },
+        "required": [
+          "offsetKey",
+          "limitKey"
+        ],
+        "not": {
+          "required": [
+            "totalPages",
+            "totalItems"
+          ]
+        }
+      }
+    },
+    "dataFormat": {
+      "type": "string",
+      "title": "Data Format",
+      "description": "The data format of the response.",
+      "enum": [
+        "JSON"
+      ]
+    },
+    "transform": {
+      "inputHeaders": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Input Headers",
+        "description": "Specifies which columns should have their values transformed.",
+        "properties": {
+          "headers": {
+            "type": "array",
+            "additionalProperties": false,
+            "title": "Headers",
+            "description": "The names of the columns containing values to transform.",
+            "items": {
+              "type": "string",
+              "title": "Header",
+              "description": "The name of the column containing values to transform."
+            }
+          },
+          "allColumns": {
+            "const": true,
+            "additionalProperties": false,
+            "title": "All Columns",
+            "description": "True if all columns should be transformed, including any added in the future."
+          }
+        },
+        "oneof": [
+          {
+            "required": [
+              "headers"
+            ]
+          },
+          {
+            "required": [
+              "allColumns"
+            ]
+          }
+        ]
+      },
+      "valueToFind": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Value to Find",
+        "description": "The pattern or text to be replaced.",
+        "properties": {
+          "plainText": {
+            "type": "object",
+            "additionalProperties": false,
+            "title": "Plain Text",
+            "description": "A literal text value to be matched. If the value is the empty string, only empty cells in the input columns will be matched.",
+            "properties": {
+              "value": {
+                "type": "string",
+                "title": "Value",
+                "description": "Text to be matched."
+              },
+              "ignoreCase": {
+                "type": "boolean",
+                "default": false,
+                "title": "Ignore Case",
+                "description": "True if matching should be case-insensitive, false otherwise."
+              }
+            },
+            "required": [
+              "value"
+            ]
+          },
+          "regex": {
+            "type": "string",
+            "title": "Regex",
+            "description": "Regular expression to be matched (in accordance with the java.util.regex engine)."
+          }
+        },
+        "oneof": [
+          {
+            "required": [
+              "plainText"
+            ]
+          },
+          {
+            "required": [
+              "regex"
+            ]
+          }
+        ]
+      },
+      "fixCapitalization": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Fix Capitalization",
+        "description": "Transforms the text of the input columns by applying the selected capitalization option.",
+        "properties": {
+          "inputHeaders": {
+            "$ref": "#/definitions/transform/inputHeaders"
+          },
+          "cleanOption": {
+            "type": "string",
+            "title": "Clean Option",
+            "description": "The clean option to be applied.",
+            "enum": [
+              "ALL_CAPS",
+              "ALL_LOWER",
+              "PROPER_CASE"
+            ]
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "cleanOption"
+        ]
+      },
+      "removeUnwantedChars": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Unwanted Characters Removal",
+        "description": "Transforms the text of the input columns by applying the selected character removal options.",
+        "properties": {
+          "inputHeaders": {
+            "$ref": "#/definitions/transform/inputHeaders"
+          },
+          "cleanOptions": {
+            "type": "array",
+            "title": "Clean Options",
+            "description": "How the data should be cleaned.",
+            "uniqueItems": true,
+            "additionalProperties": false,
+            "items": {
+              "type": "string",
+              "title": "Unwanted Character Removal Options",
+              "description": "The unwanted character removal options to be applied.",
+              "enum": [
+                "TRIM_WHITESPACE",
+                "REMOVE_WHITESPACE",
+                "REMOVE_NUMBERS",
+                "REMOVE_NON_NUMERICS",
+                "REMOVE_PUNCTUATION"
+              ]
+            }
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "cleanOptions"
+        ]
+      },
+      "extractText": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Extract Text",
+        "description": "Transforms the text of the input column by extracting text and creating a new column.",
+        "properties": {
+          "inputHeader": {
+            "type": "string",
+            "title": "Input Column Header",
+            "description": "The header of the column from which text should be extracted"
+          },
+          "newColumnHeader": {
+            "type": "string",
+            "title": "New Column Header",
+            "description": "The header for the new column that will be populated with extracted data"
+          },
+          "extractOperation": {
+            "type": "string",
+            "title": "The Extraction Operation",
+            "description": "The strategy to be used when determining how much of the text to extract.",
+            "enum": [
+              "ALL_TEXT_AFTER",
+              "ALL_TEXT_BEFORE",
+              "SOME_TEXT_AFTER",
+              "SOME_TEXT_BEFORE"
+            ]
+          },
+          "extractFrom": {
+            "type": "string",
+            "title": "The Extraction Location",
+            "description": "From where the extraction operation should occur",
+            "enum": [
+              "FIRST_INSTANCE_MATCHING_TEXT",
+              "LAST_INSTANCE_MATCHING_TEXT",
+              "OFFSET_FROM_BEGINNING",
+              "OFFSET_FROM_END"
+            ]
+          },
+          "valueToFind": {
+            "$ref": "#/definitions/transform/valueToFind"
+          },
+          "offsetLength": {
+            "type": "number",
+            "title": "The Extraction Offset",
+            "description": "How many characters from the starting point that the extraction should begin."
+          },
+          "maxLengthTextToKeep": {
+            "type": "number",
+            "title": "The Extraction Length",
+            "description": "The max number of characters that should be extracted. No limit if 0 or unspecified."
+          }
+        },
+        "required": [
+          "inputHeader",
+          "newColumnHeader",
+          "extractOperation",
+          "extractFrom"
+        ],
+        "anyOf": [
+          {
+            "if": {
+              "properties": {
+                "extractFrom": {
+                  "pattern": "[*_INSTANCE_MATCHING_TEXT]"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "valueToFind"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "extractFrom": {
+                  "pattern": "[OFFSET_FROM_*]"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "offsetLength"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "extractOperation": {
+                  "pattern": "[SOME_TEXT_*]"
+                }
+              }
+            },
+            "then": {
+              "required": [
+                "maxLengthTextToKeep"
+              ]
+            }
+          }
+        ]
+      },
+      "function": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Function",
+        "description": "Invokes a function to transform values.",
+        "properties": {
+          "inputHeaders": {
+            "$ref": "#/definitions/transform/inputHeaders"
+          },
+          "plugin": {
+            "type": "string",
+            "title": "Plugin",
+            "description": "The reference to a Plugin resource that contains a desired function.",
+            "format": "platform/plugin"
+          },
+          "function": {
+            "type": "string",
+            "title": "Function",
+            "description": "The function to invoke."
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "plugin",
+          "function"
+        ]
+      },
+      "findAndReplace": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Find and Replace",
+        "description": "Finds a specified pattern or text and replaces it with a specified value.",
+        "properties": {
+          "inputHeaders": {
+            "$ref": "#/definitions/transform/inputHeaders"
+          },
+          "valueToFind": {
+            "$ref": "#/definitions/transform/valueToFind"
+          },
+          "replacement": {
+            "type": "string",
+            "title": "Replacement",
+            "description": "The text that will replace all found matches. If the replacement value is the empty string, the transform will clear all values that match the valueToFind."
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "valueToFind",
+          "replacement"
+        ]
+      },
+      "addColumn": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Add Column",
+        "description": "Adds a new column and populate the column with a static value",
+        "properties": {
+          "newColumnHeader": {
+            "type": "string",
+            "title": "New Column Header",
+            "description": "The new column\u0027s header."
+          },
+          "columnValue": {
+            "type": "string",
+            "title": "Column Value",
+            "description": "The column value to be added."
+          }
+        },
+        "required": [
+          "newColumnHeader",
+          "columnValue"
+        ]
+      },
+      "filterRows": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Filter Rows",
+        "description": "Filters rows based on specified conditionals.",
+        "properties": {
+          "action": {
+            "type": "string",
+            "title": "The Row Action",
+            "description": "The action to perform on rows that satisfy the evaluation of rules.",
+            "enum": [
+              "KEEP",
+              "REMOVE"
+            ]
+          },
+          "combinator": {
+            "type": "string",
+            "title": "The Rule Combinator",
+            "description": "The combinator connecting all rules.",
+            "enum": [
+              "OR",
+              "AND"
+            ]
+          },
+          "rules": {
+            "type": "array",
+            "additionalItems": false,
+            "title": "The Rules to Apply",
+            "description": "A list of rules to be applied to filter rows.",
+            "unordered": true,
+            "minItems": 1,
+            "items": {
+              "$ref": "#/definitions/transform/rule"
+            }
+          }
+        },
+        "required": [
+          "action",
+          "combinator",
+          "rules"
+        ]
+      },
+      "rule": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Filter Row Sub Rule",
+        "description": "A single rule to be applied to filter row.",
+        "properties": {
+          "columnHeader": {
+            "type": "string",
+            "title": "The Column Header",
+            "description": "The column header to which to apply the rule."
+          },
+          "conditional": {
+            "type": "string",
+            "title": "The Conditional",
+            "description": "The conditional to apply. For conditionals that compare values, the value being processed is on the left, and the conditional input is on the right. When data is in the format of numbers or dates in ISO format (YYYY-MM-DD), they will be compared as numbers or dates respectively. Otherwise, they will be compared as strings",
+            "enum": [
+              "IS_BLANK",
+              "IS_NOT_BLANK",
+              "EQUALS",
+              "DOES_NOT_EQUAL",
+              "CONTAINS",
+              "DOES_NOT_CONTAIN",
+              "GREATER_THAN",
+              "GREATER_THAN_OR_EQUAL_TO",
+              "LESS_THAN",
+              "LESS_THAN_OR_EQUAL_TO"
+            ]
+          },
+          "conditionalInput": {
+            "type": "string",
+            "title": "The Conditional Input",
+            "description": "The conditional input value to apply the conditional against."
+          }
+        },
+        "required": [
+          "columnHeader",
+          "conditional"
+        ],
+        "anyOf": [
+          {
+            "if": {
+              "properties": {
+                "conditional": {
+                  "const": "IS_BLANK"
+                }
+              }
+            },
+            "else": {
+              "required": [
+                "conditionalInput"
+              ]
+            }
+          },
+          {
+            "if": {
+              "properties": {
+                "conditional": {
+                  "const": "IS_NOT_BLANK"
+                }
+              }
+            },
+            "else": {
+              "required": [
+                "conditionalInput"
+              ]
+            }
+          }
+        ]
+      },
+      "formatDates": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Format Dates",
+        "description": "Formats dates of the specified input into yyyy-MM-dd",
+        "properties": {
+          "inputHeaders": {
+            "$ref": "#/definitions/transform/inputHeaders"
+          },
+          "inputFormat": {
+            "type": "string",
+            "title": "Input Format",
+            "description": "The date format pattern of the input values (in accordance with java.time.format.DateTimeFormatter)."
+          },
+          "inputLocale": {
+            "type": "string",
+            "title": "Input Locale",
+            "description": "The locale of the input values."
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "inputFormat"
+        ]
+      },
+      "mergeColumns": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Merge Columns",
+        "description": "Merges multiple columns together into a new column separated by a specified delimiter.",
+        "properties": {
+          "inputHeaders": {
+            "type": "array",
+            "additionalProperties": false,
+            "title": "Input Headers",
+            "description": "The names of the columns to merge together.",
+            "items": {
+              "type": "string",
+              "title": "Header",
+              "description": "The name of the column containing values to merge."
+            }
+          },
+          "newColumnHeader": {
+            "type": "string",
+            "title": "New Column Header",
+            "description": "The new column\u0027s header."
+          },
+          "delimiter": {
+            "type": "string",
+            "title": "Delimiter",
+            "description": "The delimiter that separates the merged columns\u0027 values."
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "newColumnHeader",
+          "delimiter"
+        ]
+      },
+      "splitColumn": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Split Column",
+        "description": "Split a column into one or more columns based on a specified delimiter.",
+        "properties": {
+          "inputHeader": {
+            "type": "string",
+            "title": "Input Column Header",
+            "description": "The column containing the data that needs to be split."
+          },
+          "newColumnHeaders": {
+            "type": "array",
+            "additionalProperties": false,
+            "title": "New Column Headers",
+            "description": "The names of the columns to split into.",
+            "items": {
+              "type": "string",
+              "title": "Header",
+              "description": "The name of the column containing split values."
+            }
+          },
+          "delimiter": {
+            "type": "string",
+            "title": "Delimiter",
+            "description": "The delimiter used to split the column\u0027s value into new ones."
+          }
+        },
+        "required": [
+          "inputHeader",
+          "newColumnHeaders",
+          "delimiter"
+        ]
+      },
+      "fillInEmptyCells": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Fill in Empty Cells",
+        "description": "Finds empty cells and fills them in with a specified default value.",
+        "properties": {
+          "inputHeaders": {
+            "$ref": "#/definitions/transform/inputHeaders"
+          },
+          "value": {
+            "type": "string",
+            "title": "Value",
+            "description": "The text that will replace all empty cells."
+          }
+        },
+        "required": [
+          "inputHeaders",
+          "value"
+        ]
+      },
+      "splitIntoRows": {
+        "type": "object",
+        "additionalProperties": false,
+        "title": "Split Into Rows",
+        "description": "Splits a column into one or more rows based on a specified delimiter.",
+        "properties": {
+          "inputHeader": {
+            "type": "string",
+            "title": "Input Column Header",
+            "description": "The header of the column containing the values to split."
+          },
+          "delimiter": {
+            "type": "string",
+            "title": "Delimiter",
+            "description": "The character on which the values should be split."
+          }
+        },
+        "required": [
+          "inputHeader",
+          "delimiter"
+        ]
+      }
+    },
+    "mapping": {
+      "type": "object",
+      "description": "The mapping generated by the transformers.",
+      "header": {
+        "type": "string",
+        "title": "Header",
+        "description": "Header of a table."
+      },
+      "field": {
+        "type": "string",
+        "title": "Field",
+        "description": "The reference to the field resource.",
+        "format": "km/field"
+      },
+      "subfieldPath": {
+        "type": "array",
+        "additionalItems": false,
+        "description": "Path to a particular property or list item index.",
+        "items": {
+          "type": "object",
+          "additionalProperties": false,
+          "oneOf": {
+            "name": {
+              "type": "string",
+              "title": "Name",
+              "description": "A name which identifies a struct value property."
+            },
+            "index": {
+              "type": "number",
+              "title": "Index",
+              "description": "An index which identifies an item in a list value."
+            }
+          }
+        }
+      },
+      "required": [
+        "header",
+        "field"
+      ]
+    },
+    "selector": {
+      "type": "object",
+      "additionalProperties": false,
+      "description": "A selector for extracting content.",
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "The type of data selector.",
+          "enum": [
+            "CSS",
+            "XPATH",
+            "JSON",
+            "PAGE_URL",
+            "PAGE_TITLE",
+            "CLEANED_BODY",
+            "PAGE_ID",
+            "ITEM_ID"
+          ]
+        },
+        "header": {
+          "type": "string",
+          "title": "Header",
+          "description": "The header used to identify the extracted content."
+        },
+        "path": {
+          "type": "string",
+          "title": "Path",
+          "description": "The selector content path."
+        },
+        "mode": {
+          "type": "string",
+          "description": "The selector mode of a CSS or XPath selector.",
+          "enum": [
+            "ALL_TEXT",
+            "DIRECT_TEXT",
+            "INNER_HTML",
+            "URL",
+            "IMAGE_URL",
+            "ATTRIBUTE"
+          ]
+        },
+        "attributeKey": {
+          "type": "string",
+          "title": "Attribute Key",
+          "description": "The attribute key of a CSS or XPath selector."
+        }
+      },
+      "required": [
+        "type",
+        "header"
+      ]
+    },
+    "customSchedule": {
+      "type": "object",
+      "title": "Custom Schedule",
+      "description": "The custom schedule that the Connector will follow. The Connector can be configured to run daily, weekly, monthly or a custom frequency. Currently, this is only supported for API Connectors.",
+      "properties": {
+        "timeZone": {
+          "type": "string",
+          "title": "Time Zone",
+          "description": "The time zone in ISO-8601 Zone-ID to start a run, i.e. America/New_York."
+        },
+        "startDate": {
+          "type": "string",
+          "title": "Start Date",
+          "description": "The local date in ISO format to start scheduling runs, i.e. 2021-01-30."
+        },
+        "startTime": {
+          "type": "string",
+          "title": "Start Time",
+          "description": "The local time in ISO format to start scheduling runs, i.e. 12:00:00."
+        },
+        "frequencyType": {
+          "type": "string",
+          "title": "Frequency Type",
+          "description": "The schedule config frequency type.",
+          "enum": [
+            "HOURLY",
+            "DAILY",
+            "MONTHLY",
+            "WEEKLY"
+          ]
+        },
+        "repeatInterval": {
+          "type": "number",
+          "title": "Repeat interval",
+          "description": "The repeat interval based off the schedule config frequency type. If unset, a repeat interval of 1 will be used (e.g. every day)."
+        }
+      },
+      "required": [
+        "timeZone",
+        "startDate",
+        "startTime",
+        "frequencyType"
+      ]
+    }
+  }
+}
